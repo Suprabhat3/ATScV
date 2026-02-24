@@ -1,6 +1,7 @@
 'use server'
 
 import { aiClient } from '@/utils/ai/gemini';
+import { extractPdfText } from '@/lib/pdf/extract-text';
 
 function extractJsonObject(raw: string): string {
   const trimmed = raw.trim();
@@ -55,16 +56,7 @@ export async function optimizeResume(formData: FormData) {
 
     let resumeText = '';
     try {
-      // Extract text from PDF
-      const { PDFParse } = await import('pdf-parse');
-      const arrayBuffer = await resumeFile.arrayBuffer();
-      const pdf = new PDFParse({ data: new Uint8Array(arrayBuffer) });
-      try {
-        const pdfData = await pdf.getText();
-        resumeText = pdfData.text ?? '';
-      } finally {
-        await pdf.destroy();
-      }
+      resumeText = await extractPdfText(resumeFile);
     } catch (error) {
       console.error('PDF extraction failed in optimizeResume:', error);
       return {
@@ -72,7 +64,6 @@ export async function optimizeResume(formData: FormData) {
           'Failed to read this PDF in production. Please try another text-based PDF or re-export the file.',
       };
     }
-
     if (!resumeText.trim()) {
       return { error: 'Could not extract text from the provided PDF.' };
     }
