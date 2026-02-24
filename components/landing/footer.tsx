@@ -154,13 +154,22 @@ export function Footer() {
             © {new Date().getFullYear()} ATScV. Built for excellence.
           </p>
           <div className="flex items-center gap-6 text-sm text-slate-500">
-            <Link href="#" className="hover:text-emerald-600 transition-colors">
+            <Link
+              href="/privacy"
+              className="hover:text-emerald-600 transition-colors"
+            >
               Privacy Policy
             </Link>
-            <Link href="#" className="hover:text-emerald-600 transition-colors">
+            <Link
+              href="/terms"
+              className="hover:text-emerald-600 transition-colors"
+            >
               Terms of Service
             </Link>
-            <Link href="#" className="hover:text-emerald-600 transition-colors">
+            <Link
+              href="/cookies"
+              className="hover:text-emerald-600 transition-colors"
+            >
               Cookies
             </Link>
           </div>
