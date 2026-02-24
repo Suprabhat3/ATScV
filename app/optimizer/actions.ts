@@ -4,7 +4,7 @@ import { aiClient } from '@/utils/ai/gemini';
 import { extractPdfText } from '@/lib/pdf/extract-text';
 
 const MAX_RESUME_CHARS = 12000;
-const TARGET_RESUME_WORDS = '550-750';
+const TARGET_RESUME_WORDS = '350-500';
 
 function extractJsonObject(raw: string): string {
   const trimmed = raw.trim();
@@ -132,15 +132,15 @@ Ensure the output is ONLY the JSON object, with no markdown wrappers or extra te
 ONE-PAGE DENSITY REQUIREMENTS (IMPORTANT):
 - Target total content length: approximately ${TARGET_RESUME_WORDS} words.
 - Summary: 50-80 words.
-- Experience: at least 2 entries; each entry must include 4-6 strong bullets.
-- Projects: at least 2 entries; each entry must include 3-5 bullets.
+- Experience: as per the orignal
+- Projects: at least 2 entries.
 - Skills: provide 8-10 relevant, ATS-friendly skills.
 
 SPARSE-RESUME RULES:
 - If the original resume has limited details, expand responsibly using the candidate's actual domain, tools, and responsibilities inferred from the source text and target job.
 - Do not fabricate employers, degrees, dates, certifications, or exact metrics that are not supported by input.
 - If needed, use safe section labels like "Relevant Experience" or "Selected Projects" and write outcome-focused bullets without fake claims.
-- Prioritize completeness and readability so the final resume feels like a full one-page document.`;
+- Prioritize completeness and readability so the final resume feels like a full one-page document. don't more then that `;
 
     const response = await getOptimizationResponse(prompt);
 
