@@ -3,6 +3,29 @@
 import { aiClient } from '@/utils/ai/gemini';
 import { extractPdfText } from '@/lib/pdf/extract-text';
 
+const MAX_RESUME_CHARS = 9000;
+
+async function getAtsResponse(prompt: string) {
+  const models = ['gemini-3-flash-preview','gemini-2.5-flash'];
+  let lastError: unknown = null;
+
+  for (const model of models) {
+    try {
+      return await aiClient.chat.completions.create({
+        model,
+        messages: [{ role: 'user', content: prompt }],
+        temperature: 0.2,
+        max_tokens: 3600,
+        response_format: { type: 'json_object' },
+      });
+    } catch (error) {
+      lastError = error;
+    }
+  }
+
+  throw lastError ?? new Error('No model call succeeded.');
+}
+
 export async function analyzeResume(formData: FormData) {
   try {
     const resumeFile = formData.get('resume') as File | null;
@@ -19,13 +42,15 @@ export async function analyzeResume(formData: FormData) {
       console.error('PDF extraction failed in analyzeResume:', error);
       return {
         error:
-          'Failed to read this PDF in production. Please try another text-based PDF or re-export the file.',
+          'We could not read this PDF. Please upload a text-based PDF or export your resume again and try once more.',
       };
     }
 
     if (!resumeText.trim()) {
       return { error: 'Could not extract text from the provided PDF.' };
     }
+    const normalizedResumeText = resumeText.replace(/\s+/g, ' ').trim();
+    const compactResumeText = normalizedResumeText.slice(0, MAX_RESUME_CHARS);
 
     const prompt = `You are an expert ATS (Applicant Tracking System) Analyzer and Recruiter. 
 Analyze the original resume against the provided Job Description.
@@ -34,7 +59,7 @@ Job Description:
 ${jobDescription}
 
 Resume Text:
-${resumeText}
+${compactResumeText}
 
 Provide an evaluation in valid JSON format only, with the following structure:
 {
@@ -46,11 +71,7 @@ Provide an evaluation in valid JSON format only, with the following structure:
 
 Ensure the output is ONLY the JSON object, with no markdown code blocks or extra text wrapper.`;
 
-    const response = await aiClient.chat.completions.create({
-      model: 'gemini-3-flash-preview',
-      messages: [{ role: 'user', content: prompt }],
-      temperature: 0.2, // Low temperature for deterministic/analytical response
-    });
+    const response = await getAtsResponse(prompt);
 
     const content = response.choices[0]?.message?.content || '';
     

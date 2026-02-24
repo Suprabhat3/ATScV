@@ -131,11 +131,13 @@ export default function OptimizerPage() {
               </CardHeader>
               <CardContent className="pt-6 relative z-10">
                 {error && (
-                  <div className="border border-red-500/30 bg-red-950/20 text-red-300 p-4 rounded-none mb-6 text-sm flex items-center gap-3">
-                    <div className="p-1 bg-red-500/20 rounded-full">
-                      <Zap className="w-5 h-5 text-red-400" />
+                  <div className="border border-red-200 bg-red-50/90 p-4 sm:p-5 rounded-none mb-6 text-sm sm:text-base flex items-start gap-3 shadow-sm">
+                    <div className="p-1.5 bg-white border border-red-200 rounded-full mt-0.5">
+                      <Zap className="w-5 h-5 text-red-600" />
                     </div>
-                    {error}
+                    <p className="text-red-800 leading-relaxed font-medium">
+                      {error}
+                    </p>
                   </div>
                 )}
                 <form onSubmit={handleSubmit} className="space-y-6">

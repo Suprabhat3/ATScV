@@ -3,6 +3,9 @@
 import { aiClient } from '@/utils/ai/gemini';
 import { extractPdfText } from '@/lib/pdf/extract-text';
 
+const MAX_RESUME_CHARS = 12000;
+const TARGET_RESUME_WORDS = '550-750';
+
 function extractJsonObject(raw: string): string {
   const trimmed = raw.trim();
 
@@ -25,7 +28,7 @@ function extractJsonObject(raw: string): string {
 }
 
 async function getOptimizationResponse(prompt: string) {
-  const models = ['gemini-3-flash-preview', 'gemini-2.5-flash'];
+  const models = ['gemini-3-flash-preview','gemini-2.5-flash'];
   let lastError: unknown = null;
 
   for (const model of models) {
@@ -33,7 +36,8 @@ async function getOptimizationResponse(prompt: string) {
       return await aiClient.chat.completions.create({
         model,
         messages: [{ role: 'user', content: prompt }],
-        temperature: 0.6,
+        temperature: 0.4,
+        max_tokens: 3600,
         response_format: { type: 'json_object' },
       });
     } catch (error) {
@@ -61,12 +65,14 @@ export async function optimizeResume(formData: FormData) {
       console.error('PDF extraction failed in optimizeResume:', error);
       return {
         error:
-          'Failed to read this PDF in production. Please try another text-based PDF or re-export the file.',
+          'We could not read this PDF. Please upload a text-based PDF or export your resume again and try once more.',
       };
     }
     if (!resumeText.trim()) {
       return { error: 'Could not extract text from the provided PDF.' };
     }
+    const normalizedResumeText = resumeText.replace(/\s+/g, ' ').trim();
+    const compactResumeText = normalizedResumeText.slice(0, MAX_RESUME_CHARS);
 
     const prompt = `You are an expert Resume Writer and Career Coach. 
 Optimize the following resume content to be ATS-friendly, impactful, and results-oriented.
@@ -79,7 +85,7 @@ Target Context / User Request:
 ${additionalContext || 'Make it general but highly professional and optimized for modern ATS systems.'}
 
 Original Resume Text:
-${resumeText}
+${compactResumeText}
 
 Provide the optimized resume in JSON format exactly matching this structure:
 {
@@ -121,7 +127,20 @@ Provide the optimized resume in JSON format exactly matching this structure:
   "skills": ["<skill1>", "<skill2>"]
 }
 
-Ensure the output is ONLY the JSON object, with no markdown wrappers or extra text. Make the language strong, professional, and action-oriented.`;
+Ensure the output is ONLY the JSON object, with no markdown wrappers or extra text. Make the language strong, professional, and action-oriented.
+
+ONE-PAGE DENSITY REQUIREMENTS (IMPORTANT):
+- Target total content length: approximately ${TARGET_RESUME_WORDS} words.
+- Summary: 50-80 words.
+- Experience: at least 2 entries; each entry must include 4-6 strong bullets.
+- Projects: at least 2 entries; each entry must include 3-5 bullets.
+- Skills: provide 8-10 relevant, ATS-friendly skills.
+
+SPARSE-RESUME RULES:
+- If the original resume has limited details, expand responsibly using the candidate's actual domain, tools, and responsibilities inferred from the source text and target job.
+- Do not fabricate employers, degrees, dates, certifications, or exact metrics that are not supported by input.
+- If needed, use safe section labels like "Relevant Experience" or "Selected Projects" and write outcome-focused bullets without fake claims.
+- Prioritize completeness and readability so the final resume feels like a full one-page document.`;
 
     const response = await getOptimizationResponse(prompt);
 

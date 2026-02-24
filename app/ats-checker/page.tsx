@@ -233,16 +233,18 @@ export default function AtsCheckerPage() {
               )}
 
               {error && (
-                <Card className="border border-red-500/30 bg-red-950/20 p-6 rounded-none backdrop-blur-md shadow-[0_0_30px_-5px_rgba(220,38,38,0.2)]">
+                <Card className="border border-red-200 bg-red-50/90 p-5 sm:p-6 rounded-none backdrop-blur-md shadow-sm">
                   <div className="flex items-start gap-4">
-                    <div className="p-2 bg-red-500/20 rounded-full">
-                      <XCircle className="h-6 w-6 text-red-400" />
+                    <div className="p-2 bg-white border border-red-200 rounded-full">
+                      <XCircle className="h-6 w-6 text-red-600" />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-red-300 mb-1 text-lg">
+                      <h3 className="font-semibold text-red-800 mb-1 text-lg">
                         Analysis Failed
                       </h3>
-                      <p className="text-red-400/80 leading-relaxed">{error}</p>
+                      <p className="text-red-700 leading-relaxed font-medium">
+                        {error}
+                      </p>
                     </div>
                   </div>
                 </Card>
