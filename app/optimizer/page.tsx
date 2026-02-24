@@ -16,12 +16,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { optimizeResume } from "./actions";
 import { Loader2, Sparkles, Printer, Zap, UploadCloud } from "lucide-react";
-import { useRouter } from "next/navigation";
+// import { useRouter } from "next/navigation";
 import { ResumePreview } from "@/components/resume-preview";
-import { createClient } from "@/utils/supabase/client";
+// import { createClient } from "@/utils/supabase/client";
 
 export default function OptimizerPage() {
-  const router = useRouter();
+  // const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
@@ -70,17 +70,19 @@ export default function OptimizerPage() {
   }
 
   const handleDownloadAttempt = async () => {
-    const supabase = createClient();
-    const {
-      data: { session },
-    } = await supabase.auth.getSession();
-
-    if (session) {
-      window.print();
-    } else {
-      localStorage.setItem("pendingOptimizerResume", JSON.stringify(result));
-      router.push("/login?callbackUrl=/optimizer");
-    }
+    // Auth gate temporarily disabled.
+    // const supabase = createClient();
+    // const {
+    //   data: { session },
+    // } = await supabase.auth.getSession();
+    //
+    // if (session) {
+    //   window.print();
+    // } else {
+    //   localStorage.setItem("pendingOptimizerResume", JSON.stringify(result));
+    //   router.push("/login?callbackUrl=/optimizer");
+    // }
+    window.print();
   };
 
   return (

@@ -31,12 +31,12 @@ import {
   FolderGit2,
   Check,
 } from "lucide-react";
-import { useRouter } from "next/navigation";
+// import { useRouter } from "next/navigation";
 import { ResumePreview } from "@/components/resume-preview";
-import { createClient } from "@/utils/supabase/client";
+// import { createClient } from "@/utils/supabase/client";
 
 export default function BuilderPage() {
-  const router = useRouter();
+  // const router = useRouter();
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -211,20 +211,22 @@ export default function BuilderPage() {
   };
 
   const handleDownloadAttempt = async () => {
-    const supabase = createClient();
-    const {
-      data: { session },
-    } = await supabase.auth.getSession();
-
-    if (session) {
-      window.print();
-    } else {
-      localStorage.setItem(
-        "pendingBuilderResume",
-        JSON.stringify(generatedResume),
-      );
-      router.push("/login?callbackUrl=/builder");
-    }
+    // Auth gate temporarily disabled.
+    // const supabase = createClient();
+    // const {
+    //   data: { session },
+    // } = await supabase.auth.getSession();
+    //
+    // if (session) {
+    //   window.print();
+    // } else {
+    //   localStorage.setItem(
+    //     "pendingBuilderResume",
+    //     JSON.stringify(generatedResume),
+    //   );
+    //   router.push("/login?callbackUrl=/builder");
+    // }
+    window.print();
   };
 
   return (

@@ -17,7 +17,7 @@ export function Navbar() {
             <img
               src="/logo.png"
               alt="ATScV Logo"
-              className="h-8 md:h-10 w-auto object-contain transition-transform group-hover:scale-105"
+              className="h-12 w-auto object-contain transition-transform group-hover:scale-105"
             />
           </Link>
           <nav className="hidden md:flex gap-6">

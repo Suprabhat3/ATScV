@@ -82,7 +82,7 @@ export default function AtsCheckerPage() {
           <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 pointer-events-none mix-blend-overlay"></div>
         </div>
 
-        <div className="container max-w-5xl px-6 py-16 mx-auto relative z-10">
+        <div className="container max-w-5xl px-4 sm:px-6 py-16 mx-auto relative z-10">
           <div className="text-center mb-16 animate-fade-in-up">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/70 border border-slate-200 backdrop-blur-md mb-6 shadow-xl">
               <Target className="w-4 h-4 text-emerald-600" />
@@ -104,7 +104,7 @@ export default function AtsCheckerPage() {
           </div>
 
           <div
-            className={`grid ${!result ? "lg:grid-cols-[1fr_1.3fr] xl:grid-cols-[1fr_1.5fr] gap-8" : "max-w-4xl mx-auto"} items-start`}
+            className={`${!result ? "max-w-2xl mx-auto" : "max-w-4xl mx-auto"} items-start`}
           >
             {!result && (
               <Card className="bg-white/70 border-slate-200 shadow-2xl backdrop-blur-xl relative overflow-hidden rounded-none animate-fade-in-up">
@@ -213,22 +213,7 @@ export default function AtsCheckerPage() {
               </Card>
             )}
 
-            <div className="space-y-6">
-              {!result && !error && !loading && (
-                <Card className="h-full min-h-[500px] bg-white/70 border-dashed border-slate-200 flex flex-col items-center justify-center p-12 text-center text-slate-500 rounded-none backdrop-blur-md animate-fade-in-up delay-100">
-                  <div className="p-6 bg-white/70 rounded-full mb-6 ring-1 ring-white/10">
-                    <Target className="h-12 w-12 text-slate-600" />
-                  </div>
-                  <h3 className="text-xl font-medium text-slate-700 mb-2">
-                    Awaiting Input
-                  </h3>
-                  <p className="max-w-xs leading-relaxed">
-                    Your granular AI analysis report will appear here once
-                    processed.
-                  </p>
-                </Card>
-              )}
-
+            <div className="space-y-6 w-full max-w-full">
               {loading && (
                 <Card className="h-full min-h-[500px] p-12 flex flex-col items-center justify-center text-center space-y-6 bg-white/70 border-slate-200 rounded-none backdrop-blur-md">
                   <div className="relative">
@@ -280,7 +265,7 @@ export default function AtsCheckerPage() {
                     </div>
                   </div>
 
-                  <div className="px-6 sm:px-8 pt-6 sm:pt-8 pb-0 flex justify-between items-center relative z-10 print:hidden">
+                  <div className="px-6 sm:px-8 pt-6 sm:pt-8 pb-0 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 relative z-10 print:hidden">
                     <h2 className="text-xl sm:text-2xl font-bold text-slate-900 flex items-center gap-2">
                       <Target className="w-6 h-6 text-emerald-600" />
                       Analysis Complete
@@ -291,7 +276,7 @@ export default function AtsCheckerPage() {
                         setResult(null);
                         setFileName(null);
                       }}
-                      className="h-10 px-4 bg-white border-slate-200 text-slate-600 hover:text-emerald-700 hover:bg-emerald-50 rounded-none transition-all"
+                      className="h-10 w-full sm:w-auto px-4 bg-white border-slate-200 text-slate-600 hover:text-emerald-700 hover:bg-emerald-50 rounded-none transition-all"
                     >
                       Check Another Resume
                     </Button>

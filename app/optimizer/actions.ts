@@ -1,7 +1,6 @@
 'use server'
 
 import { aiClient } from '@/utils/ai/gemini';
-import { PDFParse } from 'pdf-parse';
 
 export async function optimizeResume(formData: FormData) {
   try {
@@ -14,11 +13,16 @@ export async function optimizeResume(formData: FormData) {
     }
 
     // Extract text from PDF
+    const { PDFParse } = await import('pdf-parse');
     const arrayBuffer = await resumeFile.arrayBuffer();
     const pdf = new PDFParse({ data: new Uint8Array(arrayBuffer) });
-    const pdfData = await pdf.getText();
-    const resumeText = pdfData.text;
-    await pdf.destroy();
+    let resumeText = '';
+    try {
+      const pdfData = await pdf.getText();
+      resumeText = pdfData.text ?? '';
+    } finally {
+      await pdf.destroy();
+    }
 
     if (!resumeText.trim()) {
       return { error: 'Could not extract text from the provided PDF.' };
