@@ -2,6 +2,47 @@
 
 import { aiClient } from '@/utils/ai/gemini';
 
+function extractJsonObject(raw: string): string {
+  const trimmed = raw.trim();
+
+  if (trimmed.startsWith('```json')) {
+    const unwrapped = trimmed.slice(7).replace(/```$/, '').trim();
+    if (unwrapped) return unwrapped;
+  }
+  if (trimmed.startsWith('```')) {
+    const unwrapped = trimmed.slice(3).replace(/```$/, '').trim();
+    if (unwrapped) return unwrapped;
+  }
+
+  const start = trimmed.indexOf('{');
+  const end = trimmed.lastIndexOf('}');
+  if (start !== -1 && end !== -1 && end > start) {
+    return trimmed.slice(start, end + 1);
+  }
+
+  return trimmed;
+}
+
+async function getOptimizationResponse(prompt: string) {
+  const models = ['gemini-3-flash-preview', 'gemini-2.5-flash'];
+  let lastError: unknown = null;
+
+  for (const model of models) {
+    try {
+      return await aiClient.chat.completions.create({
+        model,
+        messages: [{ role: 'user', content: prompt }],
+        temperature: 0.6,
+        response_format: { type: 'json_object' },
+      });
+    } catch (error) {
+      lastError = error;
+    }
+  }
+
+  throw lastError ?? new Error('No model call succeeded.');
+}
+
 export async function optimizeResume(formData: FormData) {
   try {
     const resumeFile = formData.get('resume') as File | null;
@@ -12,16 +53,24 @@ export async function optimizeResume(formData: FormData) {
       return { error: 'Please upload a resume to optimize.' };
     }
 
-    // Extract text from PDF
-    const { PDFParse } = await import('pdf-parse');
-    const arrayBuffer = await resumeFile.arrayBuffer();
-    const pdf = new PDFParse({ data: new Uint8Array(arrayBuffer) });
     let resumeText = '';
     try {
-      const pdfData = await pdf.getText();
-      resumeText = pdfData.text ?? '';
-    } finally {
-      await pdf.destroy();
+      // Extract text from PDF
+      const { PDFParse } = await import('pdf-parse');
+      const arrayBuffer = await resumeFile.arrayBuffer();
+      const pdf = new PDFParse({ data: new Uint8Array(arrayBuffer) });
+      try {
+        const pdfData = await pdf.getText();
+        resumeText = pdfData.text ?? '';
+      } finally {
+        await pdf.destroy();
+      }
+    } catch (error) {
+      console.error('PDF extraction failed in optimizeResume:', error);
+      return {
+        error:
+          'Failed to read this PDF in production. Please try another text-based PDF or re-export the file.',
+      };
     }
 
     if (!resumeText.trim()) {
@@ -83,20 +132,10 @@ Provide the optimized resume in JSON format exactly matching this structure:
 
 Ensure the output is ONLY the JSON object, with no markdown wrappers or extra text. Make the language strong, professional, and action-oriented.`;
 
-    const response = await aiClient.chat.completions.create({
-      model: 'gemini-3-flash-preview',
-      messages: [{ role: 'user', content: prompt }],
-      temperature: 0.6, 
-    });
+    const response = await getOptimizationResponse(prompt);
 
     const content = response.choices[0]?.message?.content || '';
-    
-    let jsonStr = content.trim();
-    if (jsonStr.startsWith('```json')) jsonStr = jsonStr.slice(7);
-    if (jsonStr.startsWith('```')) jsonStr = jsonStr.slice(3);
-    if (jsonStr.endsWith('```')) jsonStr = jsonStr.slice(0, -3);
-    
-    const result = JSON.parse(jsonStr.trim());
+    const result = JSON.parse(extractJsonObject(content));
 
     return { success: true, optimizedResume: result };
 

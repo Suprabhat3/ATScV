@@ -11,16 +11,24 @@ export async function analyzeResume(formData: FormData) {
       return { error: 'Both resume and job description are required.' };
     }
 
-    // Extract text from PDF
-    const { PDFParse } = await import('pdf-parse');
-    const arrayBuffer = await resumeFile.arrayBuffer();
-    const pdf = new PDFParse({ data: new Uint8Array(arrayBuffer) });
     let resumeText = '';
     try {
-      const pdfData = await pdf.getText();
-      resumeText = pdfData.text ?? '';
-    } finally {
-      await pdf.destroy();
+      // Extract text from PDF
+      const { PDFParse } = await import('pdf-parse');
+      const arrayBuffer = await resumeFile.arrayBuffer();
+      const pdf = new PDFParse({ data: new Uint8Array(arrayBuffer) });
+      try {
+        const pdfData = await pdf.getText();
+        resumeText = pdfData.text ?? '';
+      } finally {
+        await pdf.destroy();
+      }
+    } catch (error) {
+      console.error('PDF extraction failed in analyzeResume:', error);
+      return {
+        error:
+          'Failed to read this PDF in production. Please try another text-based PDF or re-export the file.',
+      };
     }
 
     if (!resumeText.trim()) {
