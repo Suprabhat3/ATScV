@@ -48,9 +48,11 @@ function ModernTemplate({ data }: { data: any }) {
         <h1 className="text-3xl sm:text-4xl font-black uppercase tracking-[0.1em] text-zinc-900 mb-1 break-words">
           {data.fullName || "Your Name"}
         </h1>
-        <p className="text-base sm:text-lg text-emerald-800 font-semibold tracking-wide mb-3">
-          {data.targetRole || "Target Role"}
-        </p>
+        {data.targetRole && (
+          <p className="text-base sm:text-lg text-emerald-800 font-semibold tracking-wide mb-3">
+            {data.targetRole}
+          </p>
+        )}
         <div className="text-xs text-zinc-600 flex flex-wrap justify-center items-center gap-x-4 gap-y-2 mt-2 px-2">
           {data.email && (
             <div className="flex items-center gap-1">
@@ -133,6 +135,49 @@ function ModernTemplate({ data }: { data: any }) {
           </h2>
           <p className="text-[10.5pt] text-zinc-800 leading-relaxed text-justify">
             {data.summary}
+          </p>
+        </div>
+      )}
+
+      {/* Education */}
+      {data.education && data.education.length > 0 && (
+        <div className="mb-4">
+          <h2 className="text-sm font-bold uppercase tracking-widest text-emerald-800 border-b border-zinc-300 pb-1 mb-2">
+            Education
+          </h2>
+          <div className="space-y-3 sm:space-y-2">
+            {data.education.map((edu: any, i: number) => (
+              <div
+                key={i}
+                className="flex flex-col sm:flex-row justify-between items-start"
+              >
+                <div className="w-full sm:w-auto">
+                  <h3 className="font-bold text-[11pt] text-zinc-900 leading-tight mb-0.5 break-words">
+                    {edu.degree}
+                  </h3>
+                  <div className="text-[10.5pt] text-zinc-700 break-words">
+                    {edu.institution}
+                  </div>
+                </div>
+                {edu.year && (
+                  <span className="text-[10px] sm:text-xs text-emerald-700 font-semibold uppercase tracking-wider mt-1 sm:mt-0.5 whitespace-nowrap">
+                    {edu.year}
+                  </span>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Skills */}
+      {data.skills && data.skills.length > 0 && (
+        <div className="mb-2">
+          <h2 className="text-sm font-bold uppercase tracking-widest text-emerald-800 border-b border-zinc-300 pb-1 mb-2">
+            Skills & Expertise
+          </h2>
+          <p className="text-[10.5pt] text-zinc-800 leading-relaxed">
+            {Array.isArray(data.skills) ? data.skills.join(" • ") : data.skills}
           </p>
         </div>
       )}
@@ -239,49 +284,6 @@ function ModernTemplate({ data }: { data: any }) {
           </div>
         </div>
       )}
-
-      {/* Education */}
-      {data.education && data.education.length > 0 && (
-        <div className="mb-4">
-          <h2 className="text-sm font-bold uppercase tracking-widest text-emerald-800 border-b border-zinc-300 pb-1 mb-2">
-            Education
-          </h2>
-          <div className="space-y-3 sm:space-y-2">
-            {data.education.map((edu: any, i: number) => (
-              <div
-                key={i}
-                className="flex flex-col sm:flex-row justify-between items-start"
-              >
-                <div className="w-full sm:w-auto">
-                  <h3 className="font-bold text-[11pt] text-zinc-900 leading-tight mb-0.5 break-words">
-                    {edu.degree}
-                  </h3>
-                  <div className="text-[10.5pt] text-zinc-700 break-words">
-                    {edu.institution}
-                  </div>
-                </div>
-                {edu.year && (
-                  <span className="text-[10px] sm:text-xs text-emerald-700 font-semibold uppercase tracking-wider mt-1 sm:mt-0.5 whitespace-nowrap">
-                    {edu.year}
-                  </span>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* Skills */}
-      {data.skills && data.skills.length > 0 && (
-        <div className="mb-2">
-          <h2 className="text-sm font-bold uppercase tracking-widest text-emerald-800 border-b border-zinc-300 pb-1 mb-2">
-            Skills & Expertise
-          </h2>
-          <p className="text-[10.5pt] text-zinc-800 leading-relaxed">
-            {Array.isArray(data.skills) ? data.skills.join(" • ") : data.skills}
-          </p>
-        </div>
-      )}
     </div>
   );
 }
@@ -326,6 +328,49 @@ function ClassicTemplate({ data }: { data: any }) {
           </h2>
           <p className="text-[10.5pt] text-black leading-relaxed text-justify">
             {data.summary}
+          </p>
+        </div>
+      )}
+
+      {/* Education */}
+      {data.education && data.education.length > 0 && (
+        <div className="mb-4">
+          <h2 className="text-sm font-bold uppercase border-b-2 border-black pb-1 mb-2 text-black">
+            Education
+          </h2>
+          <div className="space-y-2">
+            {data.education.map((edu: any, i: number) => (
+              <div
+                key={i}
+                className="flex flex-col sm:flex-row justify-between items-start"
+              >
+                <div>
+                  <h3 className="font-bold text-[11pt] text-black">
+                    {edu.institution}
+                  </h3>
+                  <div className="text-[10.5pt] italic text-black">
+                    {edu.degree}
+                  </div>
+                </div>
+                {edu.year && (
+                  <span className="text-[10.5pt] text-black whitespace-nowrap">
+                    {edu.year}
+                  </span>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Skills */}
+      {data.skills && data.skills.length > 0 && (
+        <div className="mb-2">
+          <h2 className="text-sm font-bold uppercase border-b-2 border-black pb-1 mb-2 text-black">
+            Skills
+          </h2>
+          <p className="text-[10.5pt] text-black leading-relaxed">
+            {Array.isArray(data.skills) ? data.skills.join(", ") : data.skills}
           </p>
         </div>
       )}
@@ -432,49 +477,6 @@ function ClassicTemplate({ data }: { data: any }) {
           </div>
         </div>
       )}
-
-      {/* Education */}
-      {data.education && data.education.length > 0 && (
-        <div className="mb-4">
-          <h2 className="text-sm font-bold uppercase border-b-2 border-black pb-1 mb-2 text-black">
-            Education
-          </h2>
-          <div className="space-y-2">
-            {data.education.map((edu: any, i: number) => (
-              <div
-                key={i}
-                className="flex flex-col sm:flex-row justify-between items-start"
-              >
-                <div>
-                  <h3 className="font-bold text-[11pt] text-black">
-                    {edu.institution}
-                  </h3>
-                  <div className="text-[10.5pt] italic text-black">
-                    {edu.degree}
-                  </div>
-                </div>
-                {edu.year && (
-                  <span className="text-[10.5pt] text-black whitespace-nowrap">
-                    {edu.year}
-                  </span>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* Skills */}
-      {data.skills && data.skills.length > 0 && (
-        <div className="mb-2">
-          <h2 className="text-sm font-bold uppercase border-b-2 border-black pb-1 mb-2 text-black">
-            Skills
-          </h2>
-          <p className="text-[10.5pt] text-black leading-relaxed">
-            {Array.isArray(data.skills) ? data.skills.join(", ") : data.skills}
-          </p>
-        </div>
-      )}
     </div>
   );
 }
@@ -509,163 +511,158 @@ function MinimalistTemplate({ data }: { data: any }) {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-[1fr_3fr] gap-6">
-        <div>
-          {/* Left Column content (can place skills here for variation, but standard flow is below) */}
-          {/* Skills */}
-          {data.skills && data.skills.length > 0 && (
-            <div className="mb-6">
-              <h2 className="text-xs font-semibold uppercase tracking-widest text-zinc-400 mb-2">
-                Skills
-              </h2>
-              <div className="flex flex-col gap-1">
-                {Array.isArray(data.skills) ? (
-                  data.skills.map((s: string, i: number) => (
-                    <span key={i} className="text-zinc-700">
-                      {s}
+      <div className="flex flex-col">
+        {/* Summary */}
+        {data.summary && (
+          <div className="mb-6">
+            <p className="text-zinc-700 text-justify">{data.summary}</p>
+          </div>
+        )}
+
+        {/* Education */}
+        {data.education && data.education.length > 0 && (
+          <div className="mb-6">
+            <h2 className="text-xs font-semibold uppercase tracking-widest text-zinc-400 mb-2">
+              Education
+            </h2>
+            <div className="space-y-4">
+              {data.education.map((edu: any, i: number) => (
+                <div key={i}>
+                  <h3 className="font-medium text-zinc-900">{edu.degree}</h3>
+                  <div className="text-zinc-500 text-sm mt-0.5">
+                    {edu.institution}
+                  </div>
+                  <div className="text-zinc-400 text-xs mt-0.5">
+                    {edu.year}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Skills */}
+        {data.skills && data.skills.length > 0 && (
+          <div className="mb-6">
+            <h2 className="text-xs font-semibold uppercase tracking-widest text-zinc-400 mb-2">
+              Skills
+            </h2>
+            <div className="flex flex-col gap-1">
+              {Array.isArray(data.skills) ? (
+                data.skills.map((s: string, i: number) => (
+                  <span key={i} className="text-zinc-700">
+                    {s}
+                  </span>
+                ))
+              ) : (
+                <span className="text-zinc-700">{data.skills}</span>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Experience */}
+        {data.experience && data.experience.length > 0 && (
+          <div className="mb-6">
+            <h2 className="text-xs font-semibold uppercase tracking-widest text-zinc-400 mb-4 border-b border-zinc-200 pb-1">
+              Experience
+            </h2>
+            <div className="space-y-5">
+              {data.experience.map((exp: any, i: number) => (
+                <div key={i}>
+                  <div className="flex flex-col sm:flex-row justify-between items-start mb-2">
+                    <div>
+                      <h3 className="font-medium text-[12pt] text-zinc-900">
+                        {exp.role}
+                      </h3>
+                      <div className="text-zinc-500">{exp.company}</div>
+                    </div>
+                    <span className="text-zinc-400 text-sm mt-1 sm:mt-0 whitespace-nowrap">
+                      {exp.duration}
                     </span>
-                  ))
-                ) : (
-                  <span className="text-zinc-700">{data.skills}</span>
-                )}
-              </div>
-            </div>
-          )}
-
-          {/* Education */}
-          {data.education && data.education.length > 0 && (
-            <div className="mb-6">
-              <h2 className="text-xs font-semibold uppercase tracking-widest text-zinc-400 mb-2">
-                Education
-              </h2>
-              <div className="space-y-4">
-                {data.education.map((edu: any, i: number) => (
-                  <div key={i}>
-                    <h3 className="font-medium text-zinc-900">{edu.degree}</h3>
-                    <div className="text-zinc-500 text-sm mt-0.5">
-                      {edu.institution}
-                    </div>
-                    <div className="text-zinc-400 text-xs mt-0.5">
-                      {edu.year}
-                    </div>
                   </div>
-                ))}
-              </div>
+                  <ul className="list-inside list-disc space-y-2 marker:text-zinc-300">
+                    {exp.bullets?.map((bullet: string, j: number) => (
+                      <li
+                        key={j}
+                        className="text-zinc-700 leading-relaxed text-justify"
+                      >
+                        <span className="relative -left-2">{bullet}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
             </div>
-          )}
-        </div>
+          </div>
+        )}
 
-        <div>
-          {/* Summary */}
-          {data.summary && (
-            <div className="mb-6">
-              <p className="text-zinc-700 text-justify">{data.summary}</p>
-            </div>
-          )}
-
-          {/* Experience */}
-          {data.experience && data.experience.length > 0 && (
-            <div className="mb-6">
-              <h2 className="text-xs font-semibold uppercase tracking-widest text-zinc-400 mb-4 border-b border-zinc-200 pb-1">
-                Experience
-              </h2>
-              <div className="space-y-5">
-                {data.experience.map((exp: any, i: number) => (
-                  <div key={i}>
-                    <div className="flex flex-col sm:flex-row justify-between items-start mb-2">
-                      <div>
-                        <h3 className="font-medium text-[12pt] text-zinc-900">
-                          {exp.role}
-                        </h3>
-                        <div className="text-zinc-500">{exp.company}</div>
+        {/* Projects */}
+        {data.projects && data.projects.length > 0 && (
+          <div className="mb-6">
+            <h2 className="text-xs font-semibold uppercase tracking-widest text-zinc-400 mb-4 border-b border-zinc-200 pb-1">
+              Projects
+            </h2>
+            <div className="space-y-5">
+              {data.projects.map((proj: any, i: number) => (
+                <div key={i}>
+                  <div className="mb-2">
+                    <div className="flex items-center gap-3 flex-wrap">
+                      <h3 className="font-medium text-[12pt] text-zinc-900">
+                        {proj.name}
+                      </h3>
+                      <div className="flex flex-wrap gap-2">
+                        {proj.liveLink && (
+                          <a
+                            href={
+                              proj.liveLink.startsWith("http")
+                                ? proj.liveLink
+                                : `https://${proj.liveLink}`
+                            }
+                            target="_blank"
+                            rel="noreferrer"
+                            className="text-zinc-400 hover:text-zinc-700 transition flex items-center gap-1 text-[11px]"
+                          >
+                            <Globe className="w-3.5 h-3.5" /> Live
+                          </a>
+                        )}
+                        {proj.githubLink && (
+                          <a
+                            href={
+                              proj.githubLink.startsWith("http")
+                                ? proj.githubLink
+                                : `https://${proj.githubLink}`
+                            }
+                            target="_blank"
+                            rel="noreferrer"
+                            className="text-zinc-400 hover:text-zinc-700 transition flex items-center gap-1 text-[11px]"
+                          >
+                            <Github className="w-3.5 h-3.5" /> Code
+                          </a>
+                        )}
                       </div>
-                      <span className="text-zinc-400 text-sm mt-1 sm:mt-0 whitespace-nowrap">
-                        {exp.duration}
-                      </span>
                     </div>
-                    <ul className="list-inside list-disc space-y-2 marker:text-zinc-300">
-                      {exp.bullets?.map((bullet: string, j: number) => (
-                        <li
-                          key={j}
-                          className="text-zinc-700 leading-relaxed text-justify"
-                        >
-                          <span className="relative -left-2">{bullet}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Projects */}
-          {data.projects && data.projects.length > 0 && (
-            <div className="mb-6">
-              <h2 className="text-xs font-semibold uppercase tracking-widest text-zinc-400 mb-4 border-b border-zinc-200 pb-1">
-                Projects
-              </h2>
-              <div className="space-y-5">
-                {data.projects.map((proj: any, i: number) => (
-                  <div key={i}>
-                    <div className="mb-2">
-                      <div className="flex items-center gap-3 flex-wrap">
-                        <h3 className="font-medium text-[12pt] text-zinc-900">
-                          {proj.name}
-                        </h3>
-                        <div className="flex flex-wrap gap-2">
-                          {proj.liveLink && (
-                            <a
-                              href={
-                                proj.liveLink.startsWith("http")
-                                  ? proj.liveLink
-                                  : `https://${proj.liveLink}`
-                              }
-                              target="_blank"
-                              rel="noreferrer"
-                              className="text-zinc-400 hover:text-zinc-700 transition flex items-center gap-1 text-[11px]"
-                            >
-                              <Globe className="w-3.5 h-3.5" /> Live
-                            </a>
-                          )}
-                          {proj.githubLink && (
-                            <a
-                              href={
-                                proj.githubLink.startsWith("http")
-                                  ? proj.githubLink
-                                  : `https://${proj.githubLink}`
-                              }
-                              target="_blank"
-                              rel="noreferrer"
-                              className="text-zinc-400 hover:text-zinc-700 transition flex items-center gap-1 text-[11px]"
-                            >
-                              <Github className="w-3.5 h-3.5" /> Code
-                            </a>
-                          )}
-                        </div>
+                    {proj.description && (
+                      <div className="text-zinc-500 mt-1">
+                        {proj.description}
                       </div>
-                      {proj.description && (
-                        <div className="text-zinc-500 mt-1">
-                          {proj.description}
-                        </div>
-                      )}
-                    </div>
-                    <ul className="list-inside list-disc space-y-2 marker:text-zinc-300">
-                      {proj.bullets?.map((bullet: string, j: number) => (
-                        <li
-                          key={j}
-                          className="text-zinc-700 leading-relaxed text-justify"
-                        >
-                          <span className="relative -left-2">{bullet}</span>
-                        </li>
-                      ))}
-                    </ul>
+                    )}
                   </div>
-                ))}
-              </div>
+                  <ul className="list-inside list-disc space-y-2 marker:text-zinc-300">
+                    {proj.bullets?.map((bullet: string, j: number) => (
+                      <li
+                        key={j}
+                        className="text-zinc-700 leading-relaxed text-justify"
+                      >
+                        <span className="relative -left-2">{bullet}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
             </div>
-          )}
-        </div>
+          </div>
+        )}
       </div>
     </div>
   );
