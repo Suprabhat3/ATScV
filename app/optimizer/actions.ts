@@ -1,6 +1,6 @@
 'use server'
 
-import { aiClient } from '@/utils/ai/gemini';
+import { aiClient, AI_MODEL } from '@/utils/ai/openai';
 import { extractPdfText } from '@/lib/pdf/extract-text';
 
 const MAX_RESUME_CHARS = 12000;
@@ -28,24 +28,13 @@ function extractJsonObject(raw: string): string {
 }
 
 async function getOptimizationResponse(prompt: string) {
-  const models = ['gemini-3-flash-preview','gemini-2.5-flash'];
-  let lastError: unknown = null;
-
-  for (const model of models) {
-    try {
-      return await aiClient.chat.completions.create({
-        model,
-        messages: [{ role: 'user', content: prompt }],
-        temperature: 0.4,
-        max_tokens: 3600,
-        response_format: { type: 'json_object' },
-      });
-    } catch (error) {
-      lastError = error;
-    }
-  }
-
-  throw lastError ?? new Error('No model call succeeded.');
+  return await aiClient.chat.completions.create({
+    model: AI_MODEL,
+    messages: [{ role: 'user', content: prompt }],
+    temperature: 0.4,
+    max_completion_tokens: 3600,
+    response_format: { type: 'json_object' },
+  });
 }
 
 export async function optimizeResume(formData: FormData) {

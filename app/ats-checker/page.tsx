@@ -23,8 +23,44 @@ import {
   Target,
   ArrowRight,
   Sparkles,
+  Hash,
+  TrendingUp,
+  FileText,
+  Ruler,
 } from "lucide-react";
 import Link from "next/link";
+
+const SUB_SCORE_META: Record<
+  string,
+  { label: string; icon: typeof Hash; description: string }
+> = {
+  keywordMatch: {
+    label: "Keyword Match",
+    icon: Hash,
+    description: "Alignment with job description keywords & tools",
+  },
+  quantifiedImpact: {
+    label: "Quantified Impact",
+    icon: TrendingUp,
+    description: "Use of metrics & strong action verbs",
+  },
+  formatting: {
+    label: "ATS Formatting",
+    icon: FileText,
+    description: "Parseability: headers, structure, no clutter",
+  },
+  lengthAndDensity: {
+    label: "Length & Density",
+    icon: Ruler,
+    description: "Appropriate content length for experience level",
+  },
+};
+
+function subScoreColor(score: number) {
+  if (score >= 80) return "text-emerald-600 bg-emerald-500";
+  if (score >= 60) return "text-amber-600 bg-amber-500";
+  return "text-red-600 bg-red-500";
+}
 
 export default function AtsCheckerPage() {
   const [loading, setLoading] = useState(false);
@@ -293,6 +329,55 @@ export default function AtsCheckerPage() {
                         {result.feedback}
                       </p>
                     </div>
+
+                    {result.subScores && (
+                      <div>
+                        <h4 className="font-bold text-xl text-slate-900 mb-4">
+                          Score Breakdown
+                        </h4>
+                        <div className="grid sm:grid-cols-2 gap-4">
+                          {Object.entries(SUB_SCORE_META).map(
+                            ([key, meta]) => {
+                              const sub = result.subScores?.[key];
+                              if (!sub) return null;
+                              const Icon = meta.icon;
+                              return (
+                                <div
+                                  key={key}
+                                  className="bg-white/60 p-4 rounded-none border border-slate-200"
+                                >
+                                  <div className="flex items-center justify-between mb-2">
+                                    <div className="flex items-center gap-2 text-slate-800 font-semibold text-sm">
+                                      <Icon className="h-4 w-4 text-emerald-600" />
+                                      {meta.label}
+                                    </div>
+                                    <span
+                                      className={`text-sm font-bold ${subScoreColor(sub.score).split(" ")[0]}`}
+                                    >
+                                      {sub.score}
+                                      <span className="text-xs opacity-70">
+                                        /100
+                                      </span>
+                                    </span>
+                                  </div>
+                                  <div className="w-full h-1.5 bg-slate-200 rounded-full overflow-hidden mb-2">
+                                    <div
+                                      className={`h-full rounded-full ${subScoreColor(sub.score).split(" ")[1]}`}
+                                      style={{
+                                        width: `${Math.min(Math.max(sub.score, 0), 100)}%`,
+                                      }}
+                                    />
+                                  </div>
+                                  <p className="text-xs text-slate-500 leading-relaxed">
+                                    {sub.note || meta.description}
+                                  </p>
+                                </div>
+                              );
+                            },
+                          )}
+                        </div>
+                      </div>
+                    )}
 
                     <div className="grid sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 gap-6">
                       <div className="bg-emerald-50 p-5 rounded-none border border-emerald-200">

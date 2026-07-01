@@ -1,29 +1,18 @@
 'use server'
 
-import { aiClient } from '@/utils/ai/gemini';
+import { aiClient, AI_MODEL } from '@/utils/ai/openai';
 import { extractPdfText } from '@/lib/pdf/extract-text';
 
 const MAX_RESUME_CHARS = 9000;
 
 async function getAtsResponse(prompt: string) {
-  const models = ['gemini-3-flash-preview','gemini-2.5-flash'];
-  let lastError: unknown = null;
-
-  for (const model of models) {
-    try {
-      return await aiClient.chat.completions.create({
-        model,
-        messages: [{ role: 'user', content: prompt }],
-        temperature: 0.2,
-        max_tokens: 3600,
-        response_format: { type: 'json_object' },
-      });
-    } catch (error) {
-      lastError = error;
-    }
-  }
-
-  throw lastError ?? new Error('No model call succeeded.');
+  return await aiClient.chat.completions.create({
+    model: AI_MODEL,
+    messages: [{ role: 'user', content: prompt }],
+    temperature: 0.2,
+    max_completion_tokens: 3600,
+    response_format: { type: 'json_object' },
+  });
 }
 
 export async function analyzeResume(formData: FormData) {
@@ -61,12 +50,25 @@ ${jobDescription}
 Resume Text:
 ${compactResumeText}
 
+Score the resume across these 4 sub-categories, each out of 100, then compute the overall "score" as the weighted average using these weights: keywordMatch 40%, quantifiedImpact 25%, formatting 20%, lengthAndDensity 15%.
+
+- keywordMatch: How well the resume's skills/tools/responsibilities align with keywords, technologies, and requirements explicitly stated in the job description.
+- quantifiedImpact: How much of the experience/projects content uses strong action verbs and quantifies results (numbers, %, time saved, scale, revenue, users, etc.) versus vague descriptions.
+- formatting: Likely ATS parseability - standard section headers, no tables/columns/graphics that break parsing, consistent dates, simple bullet structure, contact info present.
+- lengthAndDensity: Whether the resume length and content density is appropriate (not too sparse, not overloaded, ideally fits 1 page for <10 years experience).
+
 Provide an evaluation in valid JSON format only, with the following structure:
 {
-  "score": <number between 0 and 100>,
+  "score": <number between 0 and 100, weighted average of the 4 sub-scores below>,
   "feedback": "<A few sentences of constructive feedback on how well it matches>",
   "missingKeywords": ["<keyword1>", "<keyword2>"],
-  "matchingKeywords": ["<keyword3>", "<keyword4>"]
+  "matchingKeywords": ["<keyword3>", "<keyword4>"],
+  "subScores": {
+    "keywordMatch": { "score": <0-100>, "note": "<one concise sentence explaining this sub-score>" },
+    "quantifiedImpact": { "score": <0-100>, "note": "<one concise sentence explaining this sub-score>" },
+    "formatting": { "score": <0-100>, "note": "<one concise sentence explaining this sub-score>" },
+    "lengthAndDensity": { "score": <0-100>, "note": "<one concise sentence explaining this sub-score>" }
+  }
 }
 
 Ensure the output is ONLY the JSON object, with no markdown code blocks or extra text wrapper.`;

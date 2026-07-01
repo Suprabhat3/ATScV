@@ -27,7 +27,7 @@ export default function OptimizerPage() {
   const [error, setError] = useState<string | null>(null);
   const [fileName, setFileName] = useState<string | null>(null);
   const [templateType, setTemplateType] = useState<
-    "modern" | "classic" | "minimalist"
+    "modern" | "classic" | "minimalist" | "executive" | "compact"
   >("modern");
   const [fontScale, setFontScale] = useState(1);
   const [isManualEditing, setIsManualEditing] = useState(false);
@@ -345,6 +345,24 @@ export default function OptimizerPage() {
                       className={`flex-1 sm:px-8 h-9 rounded-none ${templateType === "minimalist" ? "bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm" : "hover:bg-slate-200/50 text-slate-600"}`}
                     >
                       Minimalist
+                    </Button>
+                    <Button
+                      variant={
+                        templateType === "executive" ? "default" : "ghost"
+                      }
+                      onClick={() => setTemplateType("executive")}
+                      className={`flex-1 sm:px-8 h-9 rounded-none ${templateType === "executive" ? "bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm" : "hover:bg-slate-200/50 text-slate-600"}`}
+                    >
+                      Executive
+                    </Button>
+                    <Button
+                      variant={
+                        templateType === "compact" ? "default" : "ghost"
+                      }
+                      onClick={() => setTemplateType("compact")}
+                      className={`flex-1 sm:px-8 h-9 rounded-none ${templateType === "compact" ? "bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm" : "hover:bg-slate-200/50 text-slate-600"}`}
+                    >
+                      Compact
                     </Button>
                   </div>
                 </div>

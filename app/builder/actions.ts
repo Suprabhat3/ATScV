@@ -1,6 +1,6 @@
 'use server'
 
-import { aiClient } from '@/utils/ai/gemini';
+import { aiClient, AI_MODEL } from '@/utils/ai/openai';
 
 export async function generateResumeContent(data: any) {
   try {
@@ -45,9 +45,10 @@ Provide the output in JSON format with the following structure:
 Ensure the output is ONLY the JSON object, with no markdown wrappers or extra text. Make the language strong, professional, and action-oriented.`;
 
     const response = await aiClient.chat.completions.create({
-      model: 'gemini-3-flash-preview',
+      model: AI_MODEL,
       messages: [{ role: 'user', content: prompt }],
-      temperature: 0.7, 
+      temperature: 0.7,
+      response_format: { type: 'json_object' },
     });
 
     const content = response.choices[0]?.message?.content || '';

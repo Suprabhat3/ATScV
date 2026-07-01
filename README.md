@@ -22,7 +22,7 @@ Welcome to **AI Resume**, the ultimate platform for building, optimizing, and ch
 - **Framework**: [Next.js](https://nextjs.org/) (App Router)
 - **Styling**: [Tailwind CSS 4](https://tailwindcss.com/)
 - **Backend/Authentication**: [Supabase](https://supabase.com/)
-- **AI Brain**: [OpenAI GPT-4](https://openai.com/)
+- **AI Brain**: [OpenAI](https://openai.com/) (`gpt-5.4-mini`)
 - **Components**: [Radix UI](https://www.radix-ui.com/) & [Shadcn UI](https://ui.shadcn.com/)
 - **Icons**: [Lucide React](https://lucide.dev/)
 - **Language**: [TypeScript](https://www.typescriptlang.org/)
